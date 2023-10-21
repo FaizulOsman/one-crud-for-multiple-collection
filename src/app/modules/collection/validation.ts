@@ -131,3 +131,31 @@ export const ProjectValidation = {
   createProjectZodValidation,
   updateProjectZodValidation,
 };
+
+// ################ Playground ################
+const createPlaygroundZodValidation = z.object({
+  body: z.object({
+    data: z.object({
+      nameSpace: z.string(),
+      contact: z.string(),
+      email: z.string(),
+      link: z.string(),
+      userName: z.string(),
+    }),
+  }),
+});
+
+const updatePlaygroundZodValidation = z.object({
+  body: z.object({
+    nameSpace: z.string().optional(),
+    contact: z.string().optional(),
+    email: z.string().optional(),
+    link: z.string().optional(),
+    userName: z.string().optional(),
+  }),
+});
+
+export const PlaygroundValidation = {
+  createPlaygroundZodValidation,
+  updatePlaygroundZodValidation,
+};

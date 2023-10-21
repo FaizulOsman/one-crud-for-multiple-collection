@@ -81,3 +81,22 @@ export type IProjectFilters = {
   projectName?: string;
   visibility?: string;
 };
+
+// ################ Playground ################
+export type IPlayground = {
+  nameSpace: string;
+  contact: string;
+  email: string;
+  link: string;
+  userName: string;
+};
+
+// Playground Model
+export type PlaygroundModel = Model<IPlayground, Record<string, unknown>>;
+
+export type IPlaygroundFilters = {
+  searchTerm?: string;
+  email?: string;
+  link?: string;
+  userName?: string;
+};

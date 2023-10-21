@@ -43,3 +43,17 @@ export const projectSearchableFields = [
   'projectName',
   'visibility',
 ];
+
+// ################ Playground ################
+export const playgroundFilterableFields = [
+  'searchTerm',
+  'email',
+  'link',
+  'userName',
+];
+export const playgroundSearchableFields = [
+  'searchTerm',
+  'email',
+  'link',
+  'userName',
+];

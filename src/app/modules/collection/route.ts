@@ -4,6 +4,7 @@ import validateRequest from '../../middlewares/validateRequest';
 import {
   ChatValidation,
   CollaboratorValidation,
+  PlaygroundValidation,
   ProjectValidation,
 } from './validation';
 const router = express.Router();
@@ -22,6 +23,12 @@ router.post(
       );
     } else if (req?.body?.collectionName === 'projects') {
       validateRequest(ProjectValidation.createProjectZodValidation)(
+        req,
+        res,
+        next
+      );
+    } else if (req?.body?.collectionName === 'playgrounds') {
+      validateRequest(PlaygroundValidation.createPlaygroundZodValidation)(
         req,
         res,
         next
@@ -50,6 +57,12 @@ router.patch(
       );
     } else if (req?.params?.collectionName === 'projects') {
       validateRequest(ProjectValidation.updateProjectZodValidation)(
+        req,
+        res,
+        next
+      );
+    } else if (req?.params?.collectionName === 'playgrounds') {
+      validateRequest(PlaygroundValidation.updatePlaygroundZodValidation)(
         req,
         res,
         next

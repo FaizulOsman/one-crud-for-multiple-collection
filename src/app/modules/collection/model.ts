@@ -6,6 +6,8 @@ import {
   CollaboratorModel,
   IProject,
   ProjectModel,
+  IPlayground,
+  PlaygroundModel,
 } from './interface';
 
 // ################ Chat Schema ################
@@ -129,3 +131,23 @@ export const ProjectSchema = new Schema<IProject, ProjectModel>(
 );
 
 export const Project = model<IProject, ProjectModel>('Projects', ProjectSchema);
+
+// ################ Playground Schema ################
+export const PlaygroundSchema = new Schema<IPlayground, PlaygroundModel>(
+  {
+    nameSpace: { type: String, required: true },
+    contact: { type: String, required: true },
+    email: { type: String, required: true },
+    link: { type: String, required: true },
+    userName: { type: String, required: true },
+  },
+  {
+    timestamps: true,
+    toJSON: { virtuals: true },
+  }
+);
+
+export const Playground = model<IPlayground, PlaygroundModel>(
+  'Playgrounds',
+  PlaygroundSchema
+);
