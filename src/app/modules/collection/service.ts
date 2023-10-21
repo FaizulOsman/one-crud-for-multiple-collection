@@ -6,13 +6,16 @@ import {
   IChatFilters,
   ICollaborator,
   ICollaboratorFilters,
+  IProject,
+  IProjectFilters,
 } from './interface';
-import { Chat, Collaborator } from './model';
+import { Chat, Collaborator, Project } from './model';
 import httpStatus from 'http-status';
 import { IPaginationOptions } from '../../../interfaces/pagination';
 import {
   chatSearchableFields,
   collaboratorSearchableFields,
+  projectSearchableFields,
 } from './constants';
 import { IGenericResponse } from '../../../interfaces/common';
 import ApiError from '../../../errors/apiError';
@@ -21,7 +24,7 @@ import { paginationHelper } from '../../../helper/paginationHelper';
 // Insert Into DB
 const insertIntoDB = async (
   collectionName: string,
-  payload: IChat | ICollaborator
+  payload: IChat | ICollaborator | IProject
 ): Promise<any> => {
   let result = null;
 
@@ -29,6 +32,8 @@ const insertIntoDB = async (
     result = await Chat.create(payload);
   } else if (collectionName === 'collaborators') {
     result = await Collaborator.create(payload);
+  } else if (collectionName === 'projects') {
+    result = await Project.create(payload);
   }
 
   return result;
@@ -37,9 +42,9 @@ const insertIntoDB = async (
 // Get All From DB (can also filter)
 const getAllFromDB = async (
   collectionName: string,
-  filters: IChatFilters | ICollaboratorFilters,
+  filters: IChatFilters | ICollaboratorFilters | IProjectFilters,
   paginationOptions: IPaginationOptions
-): Promise<IGenericResponse<IChat[] | ICollaborator[]>> => {
+): Promise<IGenericResponse<IChat[] | ICollaborator[] | IProject[]>> => {
   // Try not to use any
   const { searchTerm, ...filtersData } = filters;
 
@@ -57,6 +62,15 @@ const getAllFromDB = async (
   } else if (searchTerm && collectionName === 'collaborators') {
     andConditions?.push({
       $or: collaboratorSearchableFields?.map(field => ({
+        [field]: {
+          $regex: searchTerm,
+          $options: 'i',
+        },
+      })),
+    });
+  } else if (searchTerm && collectionName === 'projects') {
+    andConditions?.push({
+      $or: projectSearchableFields?.map(field => ({
         [field]: {
           $regex: searchTerm,
           $options: 'i',
@@ -93,6 +107,11 @@ const getAllFromDB = async (
       .sort(sortCondition)
       .skip(skip)
       .limit(limit);
+  } else if (collectionName === 'projects') {
+    result = await Project.find(whereCondition)
+      .sort(sortCondition)
+      .skip(skip)
+      .limit(limit);
   }
 
   let total = 0;
@@ -100,6 +119,8 @@ const getAllFromDB = async (
     total = await Chat.countDocuments(whereCondition);
   } else if (collectionName === 'collaborators') {
     total = await Collaborator.countDocuments(whereCondition);
+  } else if (collectionName === 'projects') {
+    total = await Project.countDocuments(whereCondition);
   }
 
   return {
@@ -116,12 +137,14 @@ const getAllFromDB = async (
 const getSingleFromDB = async (
   collectionName: string,
   id: string
-): Promise<IChat | ICollaborator | null> => {
+): Promise<IChat | ICollaborator | IProject | null> => {
   let result = null;
   if (collectionName === 'chats') {
     result = await Chat.findById(id);
   } else if (collectionName === 'collaborators') {
     result = await Collaborator.findById(id);
+  } else if (collectionName === 'projects') {
+    result = await Project.findById(id);
   }
 
   return result;
@@ -132,7 +155,7 @@ const updateSingle = async (
   collectionName: string,
   id: string,
   payload: Partial<IChat | ICollaborator>
-): Promise<IChat | ICollaborator | null> => {
+): Promise<IChat | ICollaborator | IProject | null> => {
   let result = null;
 
   if (collectionName === 'chats') {
@@ -153,6 +176,15 @@ const updateSingle = async (
     result = await Collaborator.findOneAndUpdate({ _id: id }, payload, {
       new: true,
     });
+  } else if (collectionName === 'projects') {
+    const isExist = await Project.findOne({ _id: id });
+    if (!isExist) {
+      throw new ApiError(httpStatus.BAD_REQUEST, 'Project data not found');
+    }
+
+    result = await Project.findOneAndUpdate({ _id: id }, payload, {
+      new: true,
+    });
   }
 
   return result;
@@ -162,7 +194,7 @@ const updateSingle = async (
 const deleteSingle = async (
   collectionName: string,
   id: string
-): Promise<IChat | ICollaborator | null> => {
+): Promise<IChat | ICollaborator | IProject | null> => {
   let result = null;
 
   if (collectionName === 'chats') {
@@ -172,6 +204,11 @@ const deleteSingle = async (
     }
   } else if (collectionName === 'collaborators') {
     result = await Collaborator.findByIdAndDelete(id);
+    if (!result) {
+      throw new ApiError(httpStatus.FORBIDDEN, 'Data Not Found');
+    }
+  } else if (collectionName === 'projects') {
+    result = await Project.findByIdAndDelete(id);
     if (!result) {
       throw new ApiError(httpStatus.FORBIDDEN, 'Data Not Found');
     }

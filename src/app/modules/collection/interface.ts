@@ -45,3 +45,39 @@ export type ICollaboratorFilters = {
   projectName?: string;
   visibility?: string;
 };
+
+// ################ Project ################
+export type IProject = {
+  projectId: string;
+  answers: [];
+  backgroundColor: string;
+  basePrompt: string;
+  botBackgroundColor: string;
+  botMessageColor: string;
+  botCategory: string;
+  fileNames: [];
+  fontColor: string;
+  initialMessage: string;
+  jobDescription: string;
+  languageBot: string;
+  links: string;
+  nameSpace: string;
+  projectName: string;
+  questions: [];
+  suggestedQuestions: [];
+  temperature: string;
+  userId: string;
+  userMessageColor: string;
+  visibility: string;
+};
+
+// Project Model
+export type ProjectModel = Model<IProject, Record<string, unknown>>;
+
+export type IProjectFilters = {
+  searchTerm?: string;
+  projectId?: string;
+  botCategory?: string;
+  projectName?: string;
+  visibility?: string;
+};

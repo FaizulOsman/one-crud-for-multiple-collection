@@ -27,3 +27,19 @@ export const collaboratorSearchableFields = [
   'projectName',
   'visibility',
 ];
+
+// ################ Project ################
+export const projectFilterableFields = [
+  'searchTerm',
+  'projectId',
+  'botCategory',
+  'projectName',
+  'visibility',
+];
+export const projectSearchableFields = [
+  'searchTerm',
+  'projectId',
+  'botCategory',
+  'projectName',
+  'visibility',
+];

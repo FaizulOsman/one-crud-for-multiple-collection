@@ -71,3 +71,63 @@ export const CollaboratorValidation = {
   createCollaboratorZodValidation,
   updateCollaboratorZodValidation,
 };
+
+// ################ Project ################
+const createProjectZodValidation = z.object({
+  body: z.object({
+    data: z.object({
+      projectId: z.string(),
+      answers: z.array(z.unknown()),
+      backgroundColor: z.string(),
+      basePrompt: z.string(),
+      botBackgroundColor: z.string(),
+      botMessageColor: z.string(),
+      botCategory: z.string(),
+      fileNames: z.array(z.unknown()),
+      fontColor: z.string(),
+      initialMessage: z.string(),
+      jobDescription: z.string(),
+      languageBot: z.string(),
+      links: z.string(),
+      nameSpace: z.string(),
+      projectName: z.string(),
+      questions: z.array(z.unknown()),
+      suggestedQuestions: z.array(z.unknown()),
+      temperature: z.string(),
+      userId: z.string(),
+      userMessageColor: z.string(),
+      visibility: z.string(),
+    }),
+  }),
+});
+
+const updateProjectZodValidation = z.object({
+  body: z.object({
+    projectId: z.string().optional(),
+    answers: z.array(z.unknown()).optional(),
+    backgroundColor: z.string().optional(),
+    basePrompt: z.string().optional(),
+    botBackgroundColor: z.string().optional(),
+    botMessageColor: z.string().optional(),
+    botCategory: z.string().optional(),
+    fileNames: z.array(z.unknown()).optional(),
+    fontColor: z.string().optional(),
+    initialMessage: z.string().optional(),
+    jobDescription: z.string().optional(),
+    languageBot: z.string().optional(),
+    links: z.string().optional(),
+    nameSpace: z.string().optional(),
+    projectName: z.string().optional(),
+    questions: z.array(z.unknown()).optional(),
+    suggestedQuestions: z.array(z.unknown()).optional(),
+    temperature: z.string().optional(),
+    userId: z.string().optional(),
+    userMessageColor: z.string().optional(),
+    visibility: z.string().optional(),
+  }),
+});
+
+export const ProjectValidation = {
+  createProjectZodValidation,
+  updateProjectZodValidation,
+};

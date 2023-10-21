@@ -1,7 +1,11 @@
 import express from 'express';
 import { Controller } from './controller';
 import validateRequest from '../../middlewares/validateRequest';
-import { ChatValidation, CollaboratorValidation } from './validation';
+import {
+  ChatValidation,
+  CollaboratorValidation,
+  ProjectValidation,
+} from './validation';
 const router = express.Router();
 
 // Routes
@@ -12,6 +16,12 @@ router.post(
       validateRequest(ChatValidation.createChatZodValidation)(req, res, next);
     } else if (req?.body?.collectionName === 'collaborators') {
       validateRequest(CollaboratorValidation.createCollaboratorZodValidation)(
+        req,
+        res,
+        next
+      );
+    } else if (req?.body?.collectionName === 'projects') {
+      validateRequest(ProjectValidation.createProjectZodValidation)(
         req,
         res,
         next
@@ -34,6 +44,12 @@ router.patch(
       validateRequest(ChatValidation.updateChatZodValidation)(req, res, next);
     } else if (req?.params?.collectionName === 'collaborators') {
       validateRequest(CollaboratorValidation.updateCollaboratorZodValidation)(
+        req,
+        res,
+        next
+      );
+    } else if (req?.params?.collectionName === 'projects') {
+      validateRequest(ProjectValidation.updateProjectZodValidation)(
         req,
         res,
         next
