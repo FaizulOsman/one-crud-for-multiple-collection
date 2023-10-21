@@ -10,8 +10,16 @@ import {
   IPlaygroundFilters,
   IProject,
   IProjectFilters,
+  IResumeScreenerAi,
+  IResumeScreenerAiFilters,
 } from './interface';
-import { Chat, Collaborator, Playground, Project } from './model';
+import {
+  Chat,
+  Collaborator,
+  Playground,
+  Project,
+  ResumeScreenerAi,
+} from './model';
 import httpStatus from 'http-status';
 import { IPaginationOptions } from '../../../interfaces/pagination';
 import {
@@ -19,6 +27,7 @@ import {
   collaboratorSearchableFields,
   playgroundSearchableFields,
   projectSearchableFields,
+  resumeScreenerAiSearchableFields,
 } from './constants';
 import { IGenericResponse } from '../../../interfaces/common';
 import ApiError from '../../../errors/apiError';
@@ -27,7 +36,7 @@ import { paginationHelper } from '../../../helper/paginationHelper';
 // Insert Into DB
 const insertIntoDB = async (
   collectionName: string,
-  payload: IChat | ICollaborator | IProject | IPlayground
+  payload: IChat | ICollaborator | IProject | IPlayground | IResumeScreenerAi
 ): Promise<any> => {
   let result = null;
 
@@ -39,6 +48,8 @@ const insertIntoDB = async (
     result = await Project.create(payload);
   } else if (collectionName === 'playgrounds') {
     result = await Playground.create(payload);
+  } else if (collectionName === 'resumeScreenerAis') {
+    result = await ResumeScreenerAi.create(payload);
   }
 
   return result;
@@ -51,10 +62,13 @@ const getAllFromDB = async (
     | IChatFilters
     | ICollaboratorFilters
     | IProjectFilters
-    | IPlaygroundFilters,
+    | IPlaygroundFilters
+    | IResumeScreenerAiFilters,
   paginationOptions: IPaginationOptions
 ): Promise<
-  IGenericResponse<IChat[] | ICollaborator[] | IProject[] | IPlayground[]>
+  IGenericResponse<
+    IChat[] | ICollaborator[] | IProject[] | IPlayground[] | IResumeScreenerAi[]
+  >
 > => {
   // Try not to use any
   const { searchTerm, ...filtersData } = filters;
@@ -91,6 +105,15 @@ const getAllFromDB = async (
   } else if (searchTerm && collectionName === 'playgrounds') {
     andConditions?.push({
       $or: playgroundSearchableFields?.map(field => ({
+        [field]: {
+          $regex: searchTerm,
+          $options: 'i',
+        },
+      })),
+    });
+  } else if (searchTerm && collectionName === 'resumeScreenerAis') {
+    andConditions?.push({
+      $or: resumeScreenerAiSearchableFields?.map(field => ({
         [field]: {
           $regex: searchTerm,
           $options: 'i',
@@ -137,6 +160,11 @@ const getAllFromDB = async (
       .sort(sortCondition)
       .skip(skip)
       .limit(limit);
+  } else if (collectionName === 'resumeScreenerAis') {
+    result = await ResumeScreenerAi.find(whereCondition)
+      .sort(sortCondition)
+      .skip(skip)
+      .limit(limit);
   }
 
   let total = 0;
@@ -148,6 +176,8 @@ const getAllFromDB = async (
     total = await Project.countDocuments(whereCondition);
   } else if (collectionName === 'playgrounds') {
     total = await Playground.countDocuments(whereCondition);
+  } else if (collectionName === 'resumeScreenerAis') {
+    total = await ResumeScreenerAi.countDocuments(whereCondition);
   }
 
   return {
@@ -164,7 +194,9 @@ const getAllFromDB = async (
 const getSingleFromDB = async (
   collectionName: string,
   id: string
-): Promise<IChat | ICollaborator | IProject | IPlayground | null> => {
+): Promise<
+  IChat | ICollaborator | IProject | IPlayground | IResumeScreenerAi | null
+> => {
   let result = null;
   if (collectionName === 'chats') {
     result = await Chat.findById(id);
@@ -174,6 +206,8 @@ const getSingleFromDB = async (
     result = await Project.findById(id);
   } else if (collectionName === 'playgrounds') {
     result = await Playground.findById(id);
+  } else if (collectionName === 'resumeScreenerAis') {
+    result = await ResumeScreenerAi.findById(id);
   }
 
   return result;
@@ -184,7 +218,9 @@ const updateSingle = async (
   collectionName: string,
   id: string,
   payload: Partial<IChat | ICollaborator>
-): Promise<IChat | ICollaborator | IProject | IPlayground | null> => {
+): Promise<
+  IChat | ICollaborator | IProject | IPlayground | IResumeScreenerAi | null
+> => {
   let result = null;
 
   if (collectionName === 'chats') {
@@ -223,6 +259,18 @@ const updateSingle = async (
     result = await Playground.findOneAndUpdate({ _id: id }, payload, {
       new: true,
     });
+  } else if (collectionName === 'resumeScreenerAis') {
+    const isExist = await ResumeScreenerAi.findOne({ _id: id });
+    if (!isExist) {
+      throw new ApiError(
+        httpStatus.BAD_REQUEST,
+        'ResumeScreenerAi data not found'
+      );
+    }
+
+    result = await ResumeScreenerAi.findOneAndUpdate({ _id: id }, payload, {
+      new: true,
+    });
   }
 
   return result;
@@ -232,7 +280,9 @@ const updateSingle = async (
 const deleteSingle = async (
   collectionName: string,
   id: string
-): Promise<IChat | ICollaborator | IProject | IPlayground | null> => {
+): Promise<
+  IChat | ICollaborator | IProject | IPlayground | IResumeScreenerAi | null
+> => {
   let result = null;
 
   if (collectionName === 'chats') {
@@ -252,6 +302,11 @@ const deleteSingle = async (
     }
   } else if (collectionName === 'playgrounds') {
     result = await Playground.findByIdAndDelete(id);
+    if (!result) {
+      throw new ApiError(httpStatus.FORBIDDEN, 'Data Not Found');
+    }
+  } else if (collectionName === 'resumeScreenerAis') {
+    result = await ResumeScreenerAi.findByIdAndDelete(id);
     if (!result) {
       throw new ApiError(httpStatus.FORBIDDEN, 'Data Not Found');
     }

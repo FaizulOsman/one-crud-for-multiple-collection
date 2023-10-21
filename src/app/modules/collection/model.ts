@@ -8,6 +8,8 @@ import {
   ProjectModel,
   IPlayground,
   PlaygroundModel,
+  IResumeScreenerAi,
+  ResumeScreenerAiModel,
 } from './interface';
 
 // ################ Chat Schema ################
@@ -150,4 +152,46 @@ export const PlaygroundSchema = new Schema<IPlayground, PlaygroundModel>(
 export const Playground = model<IPlayground, PlaygroundModel>(
   'Playgrounds',
   PlaygroundSchema
+);
+
+// ################ ResumeScreenerAi Schema ################
+export const ResumeScreenerAiSchema = new Schema<
+  IResumeScreenerAi,
+  ResumeScreenerAiModel
+>(
+  {
+    resumeScreenerAiId: { type: String, required: true },
+    results: {
+      type: [
+        {
+          email: String,
+          name: String,
+          phoneNumber: String,
+          rank: String,
+          similarityScore: String,
+        },
+      ],
+      required: true,
+    },
+    resumeData: {
+      type: [
+        {
+          email: String,
+          name: String,
+          phoneNumber: String,
+          resumeText: String,
+        },
+      ],
+      required: true,
+    },
+  },
+  {
+    timestamps: true,
+    toJSON: { virtuals: true },
+  }
+);
+
+export const ResumeScreenerAi = model<IResumeScreenerAi, ResumeScreenerAiModel>(
+  'ResumeScreenerAis',
+  ResumeScreenerAiSchema
 );

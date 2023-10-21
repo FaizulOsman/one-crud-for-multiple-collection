@@ -100,3 +100,36 @@ export type IPlaygroundFilters = {
   link?: string;
   userName?: string;
 };
+
+// ################ ResumeScreenerAi ################
+export type IResults = {
+  email: string;
+  name: string;
+  phoneNumber: string;
+  rank: string;
+  similarityScore: string;
+};
+
+export type IResumeData = {
+  email: string;
+  name: string;
+  phoneNumber: string;
+  resumeText: string;
+};
+
+export type IResumeScreenerAi = {
+  resumeScreenerAiId: string;
+  results: IResults[];
+  resumeData: IResumeData[];
+};
+
+// ResumeScreenerAi Model
+export type ResumeScreenerAiModel = Model<
+  IResumeScreenerAi,
+  Record<string, unknown>
+>;
+
+export type IResumeScreenerAiFilters = {
+  searchTerm?: string;
+  resumeScreenerAiId?: string;
+};

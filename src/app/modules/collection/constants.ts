@@ -57,3 +57,13 @@ export const playgroundSearchableFields = [
   'link',
   'userName',
 ];
+
+// ################ ResumeScreenerAi ################
+export const resumeScreenerAiFilterableFields = [
+  'searchTerm',
+  'resumeScreenerAiId',
+];
+export const resumeScreenerAiSearchableFields = [
+  'searchTerm',
+  'resumeScreenerAiId',
+];

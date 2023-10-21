@@ -159,3 +159,61 @@ export const PlaygroundValidation = {
   createPlaygroundZodValidation,
   updatePlaygroundZodValidation,
 };
+
+// ################ ResumeScreenerAi ################
+const createResumeScreenerAiZodValidation = z.object({
+  body: z.object({
+    data: z.object({
+      resumeScreenerAiId: z.string(),
+      results: z.array(
+        z.object({
+          email: z.string().optional(),
+          name: z.string().optional(),
+          phoneNumber: z.string().optional(),
+          rank: z.string().optional(),
+          similarityScore: z.string().optional(),
+        })
+      ),
+      resumeData: z.array(
+        z.object({
+          email: z.string().optional(),
+          name: z.string().optional(),
+          phoneNumber: z.string().optional(),
+          resumeText: z.string().optional(),
+        })
+      ),
+    }),
+  }),
+});
+
+const updateResumeScreenerAiZodValidation = z.object({
+  body: z.object({
+    resumeScreenerAiId: z.string().optional(),
+    results: z
+      .array(
+        z.object({
+          email: z.string().optional(),
+          name: z.string().optional(),
+          phoneNumber: z.string().optional(),
+          rank: z.string().optional(),
+          similarityScore: z.string().optional(),
+        })
+      )
+      .optional(),
+    resumeData: z
+      .array(
+        z.object({
+          email: z.string().optional(),
+          name: z.string().optional(),
+          phoneNumber: z.string().optional(),
+          resumeText: z.string().optional(),
+        })
+      )
+      .optional(),
+  }),
+});
+
+export const ResumeScreenerAiValidation = {
+  createResumeScreenerAiZodValidation,
+  updateResumeScreenerAiZodValidation,
+};

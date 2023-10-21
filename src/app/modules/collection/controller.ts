@@ -4,12 +4,19 @@ import { Service } from './service';
 import catchAsync from '../../../shared/catchAsync';
 import sendResponse from '../../../shared/sendResponse';
 import httpStatus from 'http-status';
-import { IChat, ICollaborator, IPlayground, IProject } from './interface';
+import {
+  IChat,
+  ICollaborator,
+  IPlayground,
+  IProject,
+  IResumeScreenerAi,
+} from './interface';
 import {
   chatFilterableFields,
   collaboratorFilterableFields,
   playgroundFilterableFields,
   projectFilterableFields,
+  resumeScreenerAiFilterableFields,
 } from './constants';
 import { paginationFields } from '../../../constants/pagination';
 import { pick } from '../../../shared/pick';
@@ -22,7 +29,9 @@ const insertIntoDB: RequestHandler = catchAsync(
     const result = await Service.insertIntoDB(collectionName, data);
 
     // Send Response
-    sendResponse<IChat | ICollaborator | IProject | IPlayground>(res, {
+    sendResponse<
+      IChat | ICollaborator | IProject | IPlayground | IResumeScreenerAi
+    >(res, {
       statusCode: httpStatus.OK,
       success: true,
       message: 'Data Created Successfully',
@@ -46,6 +55,8 @@ const getAllFromDB: RequestHandler = catchAsync(
       filters = pick(req.query, projectFilterableFields);
     } else if (collectionName === 'playgrounds') {
       filters = pick(req.query, playgroundFilterableFields);
+    } else if (collectionName === 'resumeScreenerAis') {
+      filters = pick(req.query, resumeScreenerAiFilterableFields);
     }
 
     const result = await Service.getAllFromDB(
@@ -55,7 +66,13 @@ const getAllFromDB: RequestHandler = catchAsync(
     );
 
     // Send Response
-    sendResponse<IChat[] | ICollaborator[] | IProject[] | IPlayground[]>(res, {
+    sendResponse<
+      | IChat[]
+      | ICollaborator[]
+      | IProject[]
+      | IPlayground[]
+      | IResumeScreenerAi[]
+    >(res, {
       statusCode: httpStatus.OK,
       success: true,
       message: 'Data retrieved Successfully',
@@ -74,7 +91,9 @@ const getSingleFromDB: RequestHandler = catchAsync(
     const result = await Service.getSingleFromDB(collectionName, id);
 
     // Send Response
-    sendResponse<IChat | ICollaborator | IProject | IPlayground>(res, {
+    sendResponse<
+      IChat | ICollaborator | IProject | IPlayground | IResumeScreenerAi
+    >(res, {
       statusCode: httpStatus.OK,
       success: true,
       message: 'Get Single Data Successfully',
@@ -91,7 +110,9 @@ const updateSingle: RequestHandler = catchAsync(async (req, res) => {
 
   const result = await Service.updateSingle(collectionName, id, updateData);
 
-  sendResponse<IChat | ICollaborator | IProject | IPlayground>(res, {
+  sendResponse<
+    IChat | ICollaborator | IProject | IPlayground | IResumeScreenerAi
+  >(res, {
     statusCode: httpStatus.OK,
     success: true,
     message: 'Data updated successfully',
@@ -105,7 +126,9 @@ const deleteSingle: RequestHandler = catchAsync(async (req, res) => {
   const id = req.params.id;
   const result = await Service.deleteSingle(collectionName, id);
 
-  sendResponse<IChat | ICollaborator | IProject | IPlayground>(res, {
+  sendResponse<
+    IChat | ICollaborator | IProject | IPlayground | IResumeScreenerAi
+  >(res, {
     statusCode: httpStatus.OK,
     success: true,
     message: 'Data deleted successfully',

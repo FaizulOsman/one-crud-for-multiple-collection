@@ -6,6 +6,7 @@ import {
   CollaboratorValidation,
   PlaygroundValidation,
   ProjectValidation,
+  ResumeScreenerAiValidation,
 } from './validation';
 const router = express.Router();
 
@@ -33,6 +34,10 @@ router.post(
         res,
         next
       );
+    } else if (req?.body?.collectionName === 'resumeScreenerAis') {
+      validateRequest(
+        ResumeScreenerAiValidation.createResumeScreenerAiZodValidation
+      )(req, res, next);
     }
   },
   Controller.insertIntoDB
@@ -67,6 +72,10 @@ router.patch(
         res,
         next
       );
+    } else if (req?.params?.collectionName === 'resumeScreenerAis') {
+      validateRequest(
+        ResumeScreenerAiValidation.updateResumeScreenerAiZodValidation
+      )(req, res, next);
     }
   },
   Controller.updateSingle
